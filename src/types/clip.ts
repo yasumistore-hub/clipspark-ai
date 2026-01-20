@@ -7,7 +7,7 @@ export interface Clip {
   duration: number;
   viralityScore: number;
   summary: string;
-  videoUrl: string;
+  videoId: string;
 }
 
 export interface RecentProject {
@@ -16,10 +16,12 @@ export interface RecentProject {
   thumbnail: string;
   clipCount: number;
   createdAt: string;
+  videoId?: string;
 }
 
 export type ProcessingStep = 
   | "idle"
+  | "fetching"
   | "downloading"
   | "transcribing"
   | "analyzing"

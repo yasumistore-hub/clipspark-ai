@@ -25,7 +25,7 @@ export function VideoPlayerModal({ clip, isOpen, onClose }: VideoPlayerModalProp
   if (!clip) return null;
 
   // Create YouTube embed URL with start time
-  const embedUrl = `${clip.videoUrl}?start=${clip.startTime}&autoplay=1`;
+  const embedUrl = `https://www.youtube.com/embed/${clip.videoId}?start=${clip.startTime}&autoplay=1`;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
