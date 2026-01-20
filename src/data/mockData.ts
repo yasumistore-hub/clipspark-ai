@@ -10,7 +10,7 @@ export const mockClips: Clip[] = [
     duration: 45,
     viralityScore: 95,
     summary: "This segment discusses a fascinating breakthrough in AI technology that will change everything.",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    videoId: "dQw4w9WgXcQ",
   },
   {
     id: "2",
@@ -21,7 +21,7 @@ export const mockClips: Clip[] = [
     duration: 58,
     viralityScore: 88,
     summary: "A controversial take on modern technology that's guaranteed to spark discussion.",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    videoId: "dQw4w9WgXcQ",
   },
   {
     id: "3",
@@ -32,7 +32,7 @@ export const mockClips: Clip[] = [
     duration: 32,
     viralityScore: 92,
     summary: "An emotional moment that resonates with viewers on a deep level.",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    videoId: "dQw4w9WgXcQ",
   },
   {
     id: "4",
@@ -43,7 +43,7 @@ export const mockClips: Clip[] = [
     duration: 50,
     viralityScore: 97,
     summary: "The most viral-worthy moment from the entire video with perfect pacing.",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    videoId: "dQw4w9WgXcQ",
   },
 ];
 
@@ -54,6 +54,7 @@ export const mockRecentProjects: RecentProject[] = [
     thumbnail: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=100&h=60&fit=crop",
     clipCount: 8,
     createdAt: "2 hours ago",
+    videoId: "dQw4w9WgXcQ",
   },
   {
     id: "proj-2",
@@ -61,6 +62,7 @@ export const mockRecentProjects: RecentProject[] = [
     thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=100&h=60&fit=crop",
     clipCount: 12,
     createdAt: "Yesterday",
+    videoId: "dQw4w9WgXcQ",
   },
   {
     id: "proj-3",
@@ -68,5 +70,6 @@ export const mockRecentProjects: RecentProject[] = [
     thumbnail: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=100&h=60&fit=crop",
     clipCount: 5,
     createdAt: "3 days ago",
+    videoId: "dQw4w9WgXcQ",
   },
 ];

@@ -1,21 +1,23 @@
 import { ProcessingStep } from "@/types/clip";
 import { Progress } from "@/components/ui/progress";
-import { Download, Mic, Brain, Sparkles, Check } from "lucide-react";
+import { Download, Mic, Brain, Sparkles, Check, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ProcessingStateProps {
   currentStep: ProcessingStep;
   progress: number;
+  videoTitle?: string;
 }
 
 const steps = [
+  { id: "fetching", label: "Fetching Video Info", icon: Search },
   { id: "downloading", label: "Downloading Video", icon: Download },
   { id: "transcribing", label: "Transcribing Audio", icon: Mic },
   { id: "analyzing", label: "Analyzing Sentiment", icon: Brain },
   { id: "generating", label: "Generating Clips", icon: Sparkles },
 ];
 
-export function ProcessingState({ currentStep, progress }: ProcessingStateProps) {
+export function ProcessingState({ currentStep, progress, videoTitle }: ProcessingStateProps) {
   const currentIndex = steps.findIndex((s) => s.id === currentStep);
 
   return (
@@ -25,6 +27,11 @@ export function ProcessingState({ currentStep, progress }: ProcessingStateProps)
           <Sparkles className="w-8 h-8 text-primary" />
         </div>
         <h3 className="text-xl font-semibold text-foreground">Processing Your Video</h3>
+        {videoTitle && (
+          <p className="text-primary mt-2 font-medium truncate max-w-md mx-auto">
+            "{videoTitle}"
+          </p>
+        )}
         <p className="text-muted-foreground mt-1">Our AI is analyzing your content</p>
       </div>
 
