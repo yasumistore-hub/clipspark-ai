@@ -1,0 +1,72 @@
+import { Clip, RecentProject } from "@/types/clip";
+
+export const mockClips: Clip[] = [
+  {
+    id: "1",
+    title: "Mind-blowing Fact about AI! 🤯",
+    thumbnail: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=225&fit=crop",
+    startTime: 600,
+    endTime: 645,
+    duration: 45,
+    viralityScore: 95,
+    summary: "This segment discusses a fascinating breakthrough in AI technology that will change everything.",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+  },
+  {
+    id: "2",
+    title: "The Secret Nobody Talks About 🔥",
+    thumbnail: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=400&h=225&fit=crop",
+    startTime: 1200,
+    endTime: 1258,
+    duration: 58,
+    viralityScore: 88,
+    summary: "A controversial take on modern technology that's guaranteed to spark discussion.",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+  },
+  {
+    id: "3",
+    title: "This Changed My Perspective Forever ✨",
+    thumbnail: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=225&fit=crop",
+    startTime: 2400,
+    endTime: 2432,
+    duration: 32,
+    viralityScore: 92,
+    summary: "An emotional moment that resonates with viewers on a deep level.",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+  },
+  {
+    id: "4",
+    title: "You Won't Believe What Happened Next 😱",
+    thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=225&fit=crop",
+    startTime: 3600,
+    endTime: 3650,
+    duration: 50,
+    viralityScore: 97,
+    summary: "The most viral-worthy moment from the entire video with perfect pacing.",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+  },
+];
+
+export const mockRecentProjects: RecentProject[] = [
+  {
+    id: "proj-1",
+    title: "AI Revolution Explained",
+    thumbnail: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=100&h=60&fit=crop",
+    clipCount: 8,
+    createdAt: "2 hours ago",
+  },
+  {
+    id: "proj-2",
+    title: "Tech News Weekly",
+    thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=100&h=60&fit=crop",
+    clipCount: 12,
+    createdAt: "Yesterday",
+  },
+  {
+    id: "proj-3",
+    title: "Startup Journey",
+    thumbnail: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=100&h=60&fit=crop",
+    clipCount: 5,
+    createdAt: "3 days ago",
+  },
+];
