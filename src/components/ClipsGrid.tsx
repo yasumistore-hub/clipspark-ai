@@ -6,9 +6,10 @@ interface ClipsGridProps {
   clips: Clip[];
   onPlayClip: (clip: Clip) => void;
   onUpdateClip?: (clip: Clip) => void;
+  onExportClip?: (clip: Clip) => void;
 }
 
-export function ClipsGrid({ clips, onPlayClip, onUpdateClip }: ClipsGridProps) {
+export function ClipsGrid({ clips, onPlayClip, onUpdateClip, onExportClip }: ClipsGridProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -32,6 +33,7 @@ export function ClipsGrid({ clips, onPlayClip, onUpdateClip }: ClipsGridProps) {
             clip={clip}
             onPlay={onPlayClip}
             onUpdate={onUpdateClip}
+            onExport={onExportClip}
           />
         ))}
       </div>
