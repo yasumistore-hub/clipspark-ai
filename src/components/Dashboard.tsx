@@ -6,6 +6,8 @@ import { ProcessingState } from "./ProcessingState";
 import { ClipsGrid } from "./ClipsGrid";
 import { VideoPlayerModal } from "./VideoPlayerModal";
 import { YouTubeMetadata } from "@/hooks/useYouTubeMetadata";
+import { useClipAnalysis } from "@/hooks/useClipAnalysis";
+import { toast } from "sonner";
 
 const processingSteps: ProcessingStep[] = [
   "fetching",
@@ -15,50 +17,6 @@ const processingSteps: ProcessingStep[] = [
   "generating",
 ];
 
-// Generate mock clips based on real video metadata
-function generateMockClipsFromMetadata(metadata: YouTubeMetadata): Clip[] {
-  const videoDuration = metadata.duration;
-  const clipTitles = [
-    "Mind-blowing Fact! 🤯",
-    "The Secret Nobody Talks About 🔥",
-    "This Changed My Perspective ✨",
-    "You Won't Believe This 😱",
-    "The Truth Revealed 💡",
-  ];
-  
-  const summaries = [
-    "This segment discusses a fascinating breakthrough that will change everything.",
-    "A controversial take that's guaranteed to spark discussion.",
-    "An emotional moment that resonates with viewers on a deep level.",
-    "The most viral-worthy moment with perfect pacing.",
-    "Key insights that everyone needs to hear.",
-  ];
-
-  // Generate 3-5 clips based on video duration
-  const numClips = Math.min(5, Math.max(3, Math.floor(videoDuration / 300)));
-  const clips: Clip[] = [];
-
-  for (let i = 0; i < numClips; i++) {
-    const startTime = Math.floor((videoDuration / numClips) * i + Math.random() * 60);
-    const duration = Math.floor(30 + Math.random() * 30); // 30-60 seconds
-    const endTime = Math.min(startTime + duration, videoDuration);
-
-    clips.push({
-      id: `clip-${i + 1}`,
-      title: `${clipTitles[i % clipTitles.length]}`,
-      thumbnail: metadata.thumbnails.high || metadata.thumbnails.medium || "",
-      startTime,
-      endTime,
-      duration: endTime - startTime,
-      viralityScore: Math.floor(75 + Math.random() * 25),
-      summary: summaries[i % summaries.length],
-      videoId: metadata.videoId,
-    });
-  }
-
-  return clips.sort((a, b) => b.viralityScore - a.viralityScore);
-}
-
 export function Dashboard() {
   const [processingStep, setProcessingStep] = useState<ProcessingStep>("idle");
   const [progress, setProgress] = useState(0);
@@ -67,36 +25,19 @@ export function Dashboard() {
   const [showResults, setShowResults] = useState(true);
   const [currentVideoTitle, setCurrentVideoTitle] = useState<string>("");
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const stepIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const { analyzeVideo } = useClipAnalysis();
 
   const isProcessing = processingStep !== "idle" && processingStep !== "complete";
 
-  const handleGenerate = (url: string, metadata: YouTubeMetadata) => {
+  const handleGenerate = async (url: string, metadata: YouTubeMetadata) => {
     setShowResults(false);
     setProgress(0);
     setCurrentVideoTitle(metadata.title);
     
-    // Simulate processing steps
+    // Start processing animation
     let currentStepIndex = 0;
     setProcessingStep(processingSteps[0]);
-
-    const stepInterval = setInterval(() => {
-      currentStepIndex++;
-      if (currentStepIndex < processingSteps.length) {
-        setProcessingStep(processingSteps[currentStepIndex]);
-      } else {
-        clearInterval(stepInterval);
-        setProcessingStep("complete");
-        
-        // Generate clips based on real metadata
-        const generatedClips = generateMockClipsFromMetadata(metadata);
-        
-        setTimeout(() => {
-          setProcessingStep("idle");
-          setShowResults(true);
-          setClips(generatedClips);
-        }, 500);
-      }
-    }, 1500);
 
     // Progress animation
     if (progressIntervalRef.current) {
@@ -105,15 +46,64 @@ export function Dashboard() {
     
     progressIntervalRef.current = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 100) {
-          if (progressIntervalRef.current) {
-            clearInterval(progressIntervalRef.current);
-          }
-          return 100;
+        if (prev >= 95) {
+          return 95; // Cap at 95% until AI completes
         }
-        return prev + 1.2;
+        return prev + 0.8;
       });
-    }, 80);
+    }, 100);
+
+    // Step animation (faster to reach analyzing step where AI kicks in)
+    if (stepIntervalRef.current) {
+      clearInterval(stepIntervalRef.current);
+    }
+
+    stepIntervalRef.current = setInterval(() => {
+      currentStepIndex++;
+      if (currentStepIndex < processingSteps.length - 1) {
+        setProcessingStep(processingSteps[currentStepIndex]);
+      } else {
+        if (stepIntervalRef.current) {
+          clearInterval(stepIntervalRef.current);
+        }
+      }
+    }, 1200);
+
+    try {
+      // Call AI to analyze video and generate clips
+      const aiClips = await analyzeVideo(metadata);
+      
+      // Cleanup intervals
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+      if (stepIntervalRef.current) {
+        clearInterval(stepIntervalRef.current);
+      }
+
+      // Complete the progress
+      setProgress(100);
+      setProcessingStep("complete");
+      
+      setTimeout(() => {
+        setProcessingStep("idle");
+        setShowResults(true);
+        setClips(aiClips);
+        toast.success(`Found ${aiClips.length} viral-worthy clips!`);
+      }, 500);
+    } catch (error) {
+      // Cleanup intervals on error
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+      if (stepIntervalRef.current) {
+        clearInterval(stepIntervalRef.current);
+      }
+      
+      setProcessingStep("idle");
+      setShowResults(true);
+      toast.error(error instanceof Error ? error.message : "Failed to analyze video");
+    }
   };
 
   const handlePlayClip = (clip: Clip) => {
