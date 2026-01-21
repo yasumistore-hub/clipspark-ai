@@ -5,9 +5,10 @@ import { Sparkles } from "lucide-react";
 interface ClipsGridProps {
   clips: Clip[];
   onPlayClip: (clip: Clip) => void;
+  onUpdateClip?: (clip: Clip) => void;
 }
 
-export function ClipsGrid({ clips, onPlayClip }: ClipsGridProps) {
+export function ClipsGrid({ clips, onPlayClip, onUpdateClip }: ClipsGridProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -26,7 +27,12 @@ export function ClipsGrid({ clips, onPlayClip }: ClipsGridProps) {
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
         {clips.map((clip) => (
-          <ClipCard key={clip.id} clip={clip} onPlay={onPlayClip} />
+          <ClipCard
+            key={clip.id}
+            clip={clip}
+            onPlay={onPlayClip}
+            onUpdate={onUpdateClip}
+          />
         ))}
       </div>
     </div>

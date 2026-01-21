@@ -1,12 +1,16 @@
+import { useState } from "react";
 import { Clip } from "@/types/clip";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Play, Download, Edit, Clock, Zap } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Play, Download, Edit, Clock, Zap, Check, X } from "lucide-react";
 
 interface ClipCardProps {
   clip: Clip;
   onPlay: (clip: Clip) => void;
+  onUpdate?: (clip: Clip) => void;
 }
 
 function formatTime(seconds: number): string {
@@ -15,7 +19,34 @@ function formatTime(seconds: number): string {
   return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
-export function ClipCard({ clip, onPlay }: ClipCardProps) {
+export function ClipCard({ clip, onPlay, onUpdate }: ClipCardProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(clip.title);
+  const [editedSummary, setEditedSummary] = useState(clip.summary);
+
+  const handleStartEdit = () => {
+    setEditedTitle(clip.title);
+    setEditedSummary(clip.summary);
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    if (onUpdate) {
+      onUpdate({
+        ...clip,
+        title: editedTitle.trim() || clip.title,
+        summary: editedSummary.trim() || clip.summary,
+      });
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditedTitle(clip.title);
+    setEditedSummary(clip.summary);
+    setIsEditing(false);
+  };
+
   return (
     <Card className="group overflow-hidden bg-card border-border hover:border-primary/50 transition-all duration-300 card-glow">
       {/* Thumbnail */}
@@ -53,9 +84,19 @@ export function ClipCard({ clip, onPlay }: ClipCardProps) {
 
       <CardContent className="p-4">
         {/* Title */}
-        <h3 className="font-semibold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors">
-          {clip.title}
-        </h3>
+        {isEditing ? (
+          <Input
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+            className="mb-3 bg-muted border-border focus:border-primary"
+            placeholder="Clip title..."
+            maxLength={100}
+          />
+        ) : (
+          <h3 className="font-semibold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors">
+            {clip.title}
+          </h3>
+        )}
 
         {/* Badges */}
         <div className="flex items-center gap-2 mb-4">
@@ -75,26 +116,65 @@ export function ClipCard({ clip, onPlay }: ClipCardProps) {
         </div>
 
         {/* Summary */}
-        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-          {clip.summary}
-        </p>
+        {isEditing ? (
+          <Textarea
+            value={editedSummary}
+            onChange={(e) => setEditedSummary(e.target.value)}
+            className="mb-4 bg-muted border-border focus:border-primary resize-none"
+            placeholder="Clip summary..."
+            rows={3}
+            maxLength={300}
+          />
+        ) : (
+          <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+            {clip.summary}
+          </p>
+        )}
 
         {/* Actions */}
         <div className="flex items-center gap-2">
-          <Button
-            size="sm"
-            className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
-            onClick={() => onPlay(clip)}
-          >
-            <Play className="w-4 h-4 mr-1" />
-            Play
-          </Button>
-          <Button size="sm" variant="outline" className="border-border hover:bg-muted">
-            <Download className="w-4 h-4" />
-          </Button>
-          <Button size="sm" variant="outline" className="border-border hover:bg-muted">
-            <Edit className="w-4 h-4" />
-          </Button>
+          {isEditing ? (
+            <>
+              <Button
+                size="sm"
+                className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
+                onClick={handleSave}
+              >
+                <Check className="w-4 h-4 mr-1" />
+                Save
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-border hover:bg-muted"
+                onClick={handleCancel}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                size="sm"
+                className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
+                onClick={() => onPlay(clip)}
+              >
+                <Play className="w-4 h-4 mr-1" />
+                Play
+              </Button>
+              <Button size="sm" variant="outline" className="border-border hover:bg-muted">
+                <Download className="w-4 h-4" />
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-border hover:bg-muted"
+                onClick={handleStartEdit}
+              >
+                <Edit className="w-4 h-4" />
+              </Button>
+            </>
+          )}
         </div>
       </CardContent>
     </Card>

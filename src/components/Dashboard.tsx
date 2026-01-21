@@ -110,6 +110,13 @@ export function Dashboard() {
     setSelectedClip(clip);
   };
 
+  const handleUpdateClip = (updatedClip: Clip) => {
+    setClips((prevClips) =>
+      prevClips.map((c) => (c.id === updatedClip.id ? updatedClip : c))
+    );
+    toast.success("Clip updated!");
+  };
+
   return (
     <div className="flex-1 p-8 overflow-auto">
       <div className="max-w-7xl mx-auto space-y-12">
@@ -132,7 +139,11 @@ export function Dashboard() {
         {/* Results Grid */}
         {showResults && clips.length > 0 && !isProcessing && (
           <section>
-            <ClipsGrid clips={clips} onPlayClip={handlePlayClip} />
+            <ClipsGrid
+              clips={clips}
+              onPlayClip={handlePlayClip}
+              onUpdateClip={handleUpdateClip}
+            />
           </section>
         )}
 
