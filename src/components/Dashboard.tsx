@@ -5,6 +5,7 @@ import { HeroInput } from "./HeroInput";
 import { ProcessingState } from "./ProcessingState";
 import { ClipsGrid } from "./ClipsGrid";
 import { VideoPlayerModal } from "./VideoPlayerModal";
+import { ExportModal } from "./ExportModal";
 import { YouTubeMetadata } from "@/hooks/useYouTubeMetadata";
 import { useClipAnalysis } from "@/hooks/useClipAnalysis";
 import { toast } from "sonner";
@@ -22,6 +23,7 @@ export function Dashboard() {
   const [progress, setProgress] = useState(0);
   const [clips, setClips] = useState<Clip[]>(mockClips);
   const [selectedClip, setSelectedClip] = useState<Clip | null>(null);
+  const [exportClip, setExportClip] = useState<Clip | null>(null);
   const [showResults, setShowResults] = useState(true);
   const [currentVideoTitle, setCurrentVideoTitle] = useState<string>("");
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -117,6 +119,10 @@ export function Dashboard() {
     toast.success("Clip updated!");
   };
 
+  const handleExportClip = (clip: Clip) => {
+    setExportClip(clip);
+  };
+
   return (
     <div className="flex-1 p-8 overflow-auto">
       <div className="max-w-7xl mx-auto space-y-12">
@@ -143,6 +149,7 @@ export function Dashboard() {
               clips={clips}
               onPlayClip={handlePlayClip}
               onUpdateClip={handleUpdateClip}
+              onExportClip={handleExportClip}
             />
           </section>
         )}
@@ -152,6 +159,13 @@ export function Dashboard() {
           clip={selectedClip}
           isOpen={!!selectedClip}
           onClose={() => setSelectedClip(null)}
+        />
+
+        {/* Export Modal */}
+        <ExportModal
+          clip={exportClip}
+          isOpen={!!exportClip}
+          onClose={() => setExportClip(null)}
         />
       </div>
     </div>
