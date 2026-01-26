@@ -12,6 +12,7 @@ interface ClipCardProps {
   onPlay: (clip: Clip) => void;
   onUpdate?: (clip: Clip) => void;
   onExport?: (clip: Clip) => void;
+  onDownload?: (clip: Clip) => void;
 }
 
 function formatTime(seconds: number): string {
@@ -20,7 +21,7 @@ function formatTime(seconds: number): string {
   return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
-export function ClipCard({ clip, onPlay, onUpdate, onExport }: ClipCardProps) {
+export function ClipCard({ clip, onPlay, onUpdate, onExport, onDownload }: ClipCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(clip.title);
   const [editedSummary, setEditedSummary] = useState(clip.summary);
@@ -167,8 +168,8 @@ export function ClipCard({ clip, onPlay, onUpdate, onExport }: ClipCardProps) {
                 size="sm"
                 variant="outline"
                 className="border-border hover:bg-muted hover:border-primary/50"
-                onClick={() => onExport?.(clip)}
-                title="Export to platforms"
+                onClick={() => onDownload?.(clip)}
+                title="Download clip"
               >
                 <Download className="w-4 h-4" />
               </Button>
