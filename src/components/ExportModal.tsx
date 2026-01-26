@@ -143,7 +143,11 @@ export function ExportModal({ clip, isOpen, onClose }: ExportModalProps) {
 
         if (error) throw error;
 
-        if (data.render) {
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        if (data.render?.id) {
           setRenderJobs(prev => [
             ...prev,
             {
@@ -154,6 +158,8 @@ export function ExportModal({ clip, isOpen, onClose }: ExportModalProps) {
             },
           ]);
           toast.success(`Started rendering for ${platforms.find(p => p.id === platform)?.name}`);
+        } else {
+          throw new Error("No render ID returned - video source may not be supported");
         }
       } catch (err) {
         console.error("Export failed:", err);
