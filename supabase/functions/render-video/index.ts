@@ -139,14 +139,27 @@ serve(async (req) => {
     }
 
     const renderData = await response.json();
+    console.log("Creatomate response:", JSON.stringify(renderData));
+
+    // Validate render response
+    if (!renderData || !Array.isArray(renderData) || renderData.length === 0 || !renderData[0]?.id) {
+      console.error("Invalid render response:", renderData);
+      return new Response(
+        JSON.stringify({ 
+          error: "Failed to start render job. Creatomate may not support this video source.",
+          details: renderData
+        }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     return new Response(
       JSON.stringify({
         success: true,
         render: {
-          id: renderData[0]?.id,
-          status: renderData[0]?.status,
-          url: renderData[0]?.url,
+          id: renderData[0].id,
+          status: renderData[0].status,
+          url: renderData[0].url,
           format: formatConfig.name,
           dimensions: `${formatConfig.width}x${formatConfig.height}`,
         },
