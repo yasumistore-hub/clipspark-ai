@@ -6,6 +6,8 @@ import { ProcessingState } from "./ProcessingState";
 import { ClipsGrid } from "./ClipsGrid";
 import { VideoPlayerModal } from "./VideoPlayerModal";
 import { ExportModal } from "./ExportModal";
+import { DownloadModal } from "./DownloadModal";
+import { BatchDownloadModal } from "./BatchDownloadModal";
 import { YouTubeMetadata } from "@/hooks/useYouTubeMetadata";
 import { useClipAnalysis } from "@/hooks/useClipAnalysis";
 import { toast } from "sonner";
@@ -24,6 +26,8 @@ export function Dashboard() {
   const [clips, setClips] = useState<Clip[]>(mockClips);
   const [selectedClip, setSelectedClip] = useState<Clip | null>(null);
   const [exportClip, setExportClip] = useState<Clip | null>(null);
+  const [downloadClip, setDownloadClip] = useState<Clip | null>(null);
+  const [showBatchDownload, setShowBatchDownload] = useState(false);
   const [showResults, setShowResults] = useState(true);
   const [currentVideoTitle, setCurrentVideoTitle] = useState<string>("");
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -123,6 +127,14 @@ export function Dashboard() {
     setExportClip(clip);
   };
 
+  const handleDownloadClip = (clip: Clip) => {
+    setDownloadClip(clip);
+  };
+
+  const handleBatchDownload = () => {
+    setShowBatchDownload(true);
+  };
+
   return (
     <div className="flex-1 p-8 overflow-auto">
       <div className="max-w-7xl mx-auto space-y-12">
@@ -150,6 +162,8 @@ export function Dashboard() {
               onPlayClip={handlePlayClip}
               onUpdateClip={handleUpdateClip}
               onExportClip={handleExportClip}
+              onDownloadClip={handleDownloadClip}
+              onBatchDownload={handleBatchDownload}
             />
           </section>
         )}
@@ -166,6 +180,24 @@ export function Dashboard() {
           clip={exportClip}
           isOpen={!!exportClip}
           onClose={() => setExportClip(null)}
+        />
+
+        {/* Download Modal */}
+        <DownloadModal
+          clip={downloadClip}
+          isOpen={!!downloadClip}
+          onClose={() => setDownloadClip(null)}
+          onOpenExport={(clip) => {
+            setDownloadClip(null);
+            setExportClip(clip);
+          }}
+        />
+
+        {/* Batch Download Modal */}
+        <BatchDownloadModal
+          clips={clips}
+          isOpen={showBatchDownload}
+          onClose={() => setShowBatchDownload(false)}
         />
       </div>
     </div>
